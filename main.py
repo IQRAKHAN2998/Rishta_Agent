@@ -41,7 +41,7 @@ config = RunConfig(
 # --- Tools ---
 
 @function_tool
-def get_user_data(min_age: int) -> dict:
+def get_user_data(min_age: int,user_gender: str) -> dict:
     users = [
         {"name": "muneeb", "age": 22, "gender": "boy"},
         {"name": "Azaan", "age": 19, "gender": "boy"},
@@ -54,8 +54,21 @@ def get_user_data(min_age: int) -> dict:
         {"name": "Fariha", "age": 25, "gender": "girl"},
         {"name": "Kinza", "age": 20, "gender": "girl"},
         {"name": "Rubab", "age": 19, "gender": "girl"},
+        {"name": "Hoorain", "age": 25, "gender": "girl"},
+        {"name": "Nayab", "age": 29, "gender": "girl"},
+        {"name": "Varda", "age": 26, "gender": "girl"},
+
     ]
-    filtered = [user for user in users if user["age"] >= min_age]
+
+
+    if user_gender.lower() == "male":
+        target_gender = "girl"
+    elif user_gender.lower() == "female":
+        target_gender = "boy"
+    else:
+        return {"result":[]}
+
+    filtered = [user for user in users if user["age"] >= min_age and user["gender"] == target_gender]
     return {"results": filtered}
 
 
@@ -78,7 +91,7 @@ rishty_wali_agent = Agent(
     name="Auntie",
     instructions="""
     You are a warm rishtay wali Auntie.
-    Ask for WhatsApp number and min age, then call `get_user_data` and send results via WhatsApp using `send_whatsapp_message`.
+    Ask for WhatsApp number, user_gender and min age, then call `get_user_data`  with gender & age and send results via WhatsApp using `send_whatsapp_message`.
     """,
     tools=[get_user_data, send_whatsapp_message]
 )
@@ -89,9 +102,11 @@ st.write("Salam beta! Main hoon Rishtay Wali Auntie. Aap ka rishta dhoondhne aay
 
 whatsapp_number = st.text_input("📱 WhatsApp Number (with country code, e.g. +923001112222)")
 min_age = st.number_input("🔞 Minimum Age Preference", min_value=16, max_value=40, value=20)
+gender = st.radio("🧑‍🤝‍🧑 Your Gender", ["Male", "Female"])
+
 
 async def run_agent():
-    input_message = f"My WhatsApp number is {whatsapp_number} and I want rishtay above age {min_age}."
+    input_message = f"My WhatsApp number is {whatsapp_number}, I am {gender}, and I want rishtay above age {min_age}."
     result = await Runner.run(
         starting_agent=rishty_wali_agent,
         input=[{"role": "user", "content": input_message}],
