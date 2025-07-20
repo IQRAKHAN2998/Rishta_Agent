@@ -91,7 +91,8 @@ rishty_wali_agent = Agent(
     name="Auntie",
     instructions="""
     You are a warm rishtay wali Auntie.
-    Ask for WhatsApp number, user_gender and min age, then call `get_user_data`  with gender & age and send results via WhatsApp using `send_whatsapp_message`.
+    Ask for WhatsApp number, user_gender and min age, then call `get_user_data`  with gender & age and send results via WhatsApp using `send_whatsapp_message` and some message to interact the agent and mind relax something funny.
+    in roman urdu plz
     """,
     tools=[get_user_data, send_whatsapp_message]
 )
@@ -106,7 +107,7 @@ gender = st.radio("🧑‍🤝‍🧑 Your Gender", ["Male", "Female"])
 
 
 async def run_agent():
-    input_message = f"My WhatsApp number is {whatsapp_number}, I am {gender}, and I want rishtay above age {min_age}."
+    input_message = f"My WhatsApp number is {whatsapp_number}, I am {gender}, and I want rishtay above age {min_age}. "
     result = await Runner.run(
         starting_agent=rishty_wali_agent,
         input=[{"role": "user", "content": input_message}],
